@@ -16,21 +16,6 @@ app.get("/", (req, res) => {
 /*TASKS ROUTES */
 app.use("/tasks", require("./routes/tasks.routes"));
 
-// app.get("/tasks", (req, res) => {
-//   res.send("Your server is running");
-// });
-
-// app.patch("/tasks", (req, res) => {
-//   res.send("Your server is running");
-// });
-
-// app.post("/tasks", (req, res) => {
-//   res.send("Your server is running");
-// });
-
-app.delete("/tasks", (req, res) => {
-  res.send("Your server is running");
-});
 
 const PORT = 3000;
 app.listen(PORT, () => {
