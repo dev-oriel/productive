@@ -8,7 +8,8 @@ const SignUpForm: React.FC = () => {
   /**VARIABLES */
   const imageContainerStyle = {
     borderTopRightRadius: '60px',
-    borderBottomRightRadius: '60px'
+    borderBottomRightRadius: '60px',
+    overflow: 'hidden'
   };
 
   /**FUNCTIONS */
@@ -33,10 +34,10 @@ const SignUpForm: React.FC = () => {
           <h1 className="text-7xl font-bold mb-8"><span className="text-black">Sign </span> <span className="text-green-500">up</span>
           </h1>
           <form className="space-y-6">
-            <label htmlFor="" className="block text-sm font-medium text-black">First Name</label>
+            <label htmlFor="" className="block text-xm font-medium text-gray-700">First Name</label>
             <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" placeholder="First Name"/>
 
-            <label htmlFor="" className="block text-sm font-medium text-gray-700">Last Name</label>
+            <label htmlFor="" className="block text-xm font-medium text-gray-700">Last Name</label>
             <input type="text" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" placeholder="Last Name"/>
 
             <label htmlFor="" className="block text-sm font-medium text-gray-700">Email</label>
