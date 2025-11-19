@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '@/components/shared/header'; // Assuming you have this or will create a simple one
+import Header from '@/components/shared/header'; 
 import Footer from '@/components/shared/footer';
 import Hero from '@/components/landing/Hero';
 import Features from '@/components/landing/Features';
