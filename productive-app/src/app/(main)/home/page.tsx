@@ -1,6 +1,7 @@
 import React from "react";
 import LandingHero from "@/components/landing/LandingHero";
 import LandingFeatures from "@/components/landing/LandingFeatures";
+import LandingFooter from "@/components/landing/LandingFooter";
 
 /**COMPONENT */
 const LoginForm: React.FC = () => {
@@ -10,10 +11,11 @@ const LoginForm: React.FC = () => {
 
   /**TEMPLATE */
   return (
-    <main className="min-h-screen flex flex-col">
+    <div className="">
       <LandingHero />
-      <LandingFeatures />
-    </main>
+      <LandingFeatures/>
+      <LandingFooter />
+    </div>
   );
 };
 
