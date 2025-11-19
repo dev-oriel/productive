@@ -97,7 +97,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
         {/* RIGHT */}
         <div className="flex items-start gap-4 flex-shrink-0 mt-4 md:mt-0 relative">
           <button onClick={onEdit}>
-            <Pencil className="w-5 h-5 text-yellow-500 hover:text-yellow-600 transition" />
+            <Pencil className="w-5 h-5 text-green-500 hover:text-green-600 transition" />
           </button>
 
           <button onClick={onMenu}>
@@ -172,7 +172,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
               <button className="px-4 py-2 bg-gray-200 rounded" onClick={closeEdit}>
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-yellow-500 text-white rounded" onClick={handleSave}>
+              <button className="px-4 py-2 bg-green-500 text-white rounded" onClick={handleSave}>
                 Save Changes
               </button>
             </div>
