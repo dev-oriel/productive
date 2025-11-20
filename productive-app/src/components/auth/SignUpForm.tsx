@@ -13,6 +13,7 @@ const SignUpForm: React.FC = () => {
     borderBottomRightRadius: '60px',
     overflow: 'hidden'
   };
+  /**FUNCTIONS */
 
   const SignupSchema = Yup.object({
     firstName: Yup.string()
