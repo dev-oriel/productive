@@ -6,16 +6,26 @@ const Header = () => {
       
       <Link className="flex items-center gap-2 font-bold text-xl text-gray-800" href="/">Productive</Link>
 
-      {/* <nav className="ml-auto flex gap-4 sm:gap-6">
+      <nav className="ml-auto flex gap-4 sm:gap-6">
         <Link className="text-sm font-medium hover:underline underline-offset-4 text-emerald-500 flex flex items-center" href="/login">
-          Log In
+        <button 
+                type="submit" 
+                className="py-2 px-4 border border-transparent rounded-full shadow-md text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150"
+              >
+                Login
+              </button>
         </Link>
         <Link className="text-sm font-medium hover:underline underline-offset-4 text-emerald-500 flex items-center" href="/signup">
-          Sign Up
+        <button 
+                type="submit" 
+                className="py-2 px-4 border border-transparent rounded-full shadow-md text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150"
+              >
+                Signup
+              </button>
         </Link>
-      </nav> */}
+      </nav>
       
-      <div className="flex flex-1 justify-center px-4 lg:px-8">
+      {/* <div className="flex flex-1 justify-center px-4 lg:px-8">
         <div className="relative w-full max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,8 +41,8 @@ const Header = () => {
             </svg>
           </div>
         </div>
-      </div>
-      <div className="flex items-center gap-3">
+      </div> */}
+      {/* <div className="flex items-center gap-3">
          <div className="text-right hidden md:block">
             <p className="text-sm font-bold text-gray-700 leading-none">Title</p>
             <p className="text-xs text-gray-400">Description</p>
@@ -44,7 +54,7 @@ const Header = () => {
               className="h-full w-full object-cover"
             />
          </div>
-      </div>
+      </div> */}
 
     </header>
   )
