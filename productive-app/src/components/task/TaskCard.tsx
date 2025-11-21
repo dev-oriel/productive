@@ -17,10 +17,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
 
   const priorityColorClass =
     priority === "High"
-      ? "bg-red-500 text-red-600"
+      ? "bg-orange-500 text-orange-600"
       : priority === "Medium"
-      ? "bg-yellow-500 text-yellow-600"
-      : "bg-green-500 text-green-600";
+      ? "bg-green-500 text-green-600"
+      : "bg-[#64748B] text-[#64748B]";
 
   /** STATE */
   const [isEditing, setIsEditing] = useState(false);
@@ -75,12 +75,18 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
           <p className="text-gray-500 mt-1">{description}</p>
 
           <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
-            <span className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition">
+            <span
+              onClick={onEdit}
+              className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
+            >
               <Calendar className="w-4 h-4 text-gray-400" />
               {date}
             </span>
 
-            <span className="flex items-center gap-1">
+            <span
+              onClick={onEdit}
+              className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
+            >
               <div
                 className={`w-3 h-3 rounded-full ${priorityColorClass}`}
               ></div>
@@ -92,11 +98,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
         {/* RIGHT */}
         <div className="flex items-start gap-4 flex-shrink-0 mt-4 md:mt-0 relative">
           <button onClick={onEdit}>
-            <Pencil className="w-5 h-5 text-green-500 hover:text-green-600 transition" />
+            <Pencil className="w-5 h-5 text-[#2DC887] hover:text-[#26A671] transition cursor-pointer" />
           </button>
 
           <button onClick={onMenu}>
-            <MoreVertical className="w-5 h-5 text-gray-500 hover:text-gray-700 transition" />
+            <MoreVertical className="w-5 h-5 text-gray-500 hover:text-[#141204] transition cursor-pointer" />
           </button>
 
           {showMenu && (
@@ -121,12 +127,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
 
       {/* EDIT MODAL */}
       {isEditing && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-white-900 bg-opacity-50 backdrop-blur-sm z-50 p-4">
           <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-2xl">
             <h3 className="text-xl font-bold mb-4">Edit Task (ID: {id})</h3>
 
             {/* Title */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-bold text-gray-700 mb-1">
               Title
             </label>
             <input
@@ -136,7 +142,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             />
 
             {/* Description */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-bold text-gray-700 mb-1">
               Description
             </label>
             <textarea
@@ -146,7 +152,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             />
 
             {/* DATE FIELD */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-bold text-gray-700 mb-1">
               Scheduled Date
             </label>
             <input
@@ -157,7 +163,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             />
 
             {/* Priority */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-bold text-gray-700 mb-1">
               Priority
             </label>
             <select
@@ -175,13 +181,21 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             {/* ACTIONS */}
             <div className="flex justify-end gap-2">
               <button
-                className="px-4 py-2 bg-gray-200 rounded"
+                className="bg-gray-400 text-white font-bold text-sm px-4 py-2 rounded-md
+                           shadow-md 
+                           hover:bg-[#64748B] hover:shadow-lg 
+                           transition-all duration-300
+                           cursor-pointer"
                 onClick={closeEdit}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-green-500 text-white rounded"
+                className="bg-[#2DC887] text-white font-bold text-sm px-4 py-2 rounded-md
+                           shadow-md 
+                           hover:bg-[#26A671] hover:shadow-lg 
+                           transition-all duration-300
+                           cursor-pointer"
                 onClick={handleSave}
               >
                 Save Changes
