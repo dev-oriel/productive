@@ -7,6 +7,9 @@ import TaskCard from "./TaskCard";
 import TaskLander from "./TaskLander";
 import { Task } from "@/lib/interfaces";
 
+// Define the stagger constant
+const STAGGER_MS = 50;
+
 /** DUMMY TASKS */
 const DUMMY_TASKS: Task[] = [
   {
@@ -74,8 +77,6 @@ const DUMMY_TASKS: Task[] = [
   },
 ];
 
-const STAGGER_MS = 80; // delay between items in ms
-
 /** TASKLIST PROPS */
 interface TaskListProps {
   setOpen: (value: boolean) => void; // receive setOpen from parent
@@ -116,6 +117,8 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
   const deleteTask = (id: number) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
   };
+  // // empty state component
+  // const isEmptyState = !isLoading && tasks.length ===0;
 
   /**TEMPLATE */
   return (
@@ -150,7 +153,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
         {/* 1. LOADING STATE (Spinner) */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mb-4"></div>
             <p className="text-gray-500 text-sm animate-pulse">
               Fetching tasks...
             </p>
