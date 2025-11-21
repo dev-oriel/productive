@@ -2,22 +2,16 @@
 
 import React, { useState } from "react";
 import { Calendar, MoreVertical, Pencil } from "lucide-react";
+import { Task } from "@/lib/interfaces";
 
-/** TYPES */
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  priority: "High" | "Medium" | "Low";
-}
-
+/**INTERFACES & TYPES */
 interface TaskCardProps {
   task: Task;
   onUpdate: (id: number, updatedTask: Partial<Task>) => void;
   onDelete: (id: number) => void;
 }
 
+/**COMPONENT */
 const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
   const { id, title, description, date, priority } = task;
 
@@ -57,7 +51,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
       title: editTitle,
       description: editDescription,
       priority: editPriority,
-      date: editDate, 
+      date: editDate,
     });
     closeEdit();
   };
@@ -75,7 +69,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
   return (
     <div className="w-full flex justify-center my-2 relative">
       <div className="w-full max-w-[800px] bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex justify-between items-start hover:shadow-md transition-all min-h-[0px]">
-        
         {/* LEFT */}
         <div className="flex flex-col flex-1">
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
@@ -88,7 +81,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             </span>
 
             <span className="flex items-center gap-1">
-              <div className={`w-3 h-3 rounded-full ${priorityColorClass}`}></div>
+              <div
+                className={`w-3 h-3 rounded-full ${priorityColorClass}`}
+              ></div>
               {priority} Priority
             </span>
           </div>
@@ -131,7 +126,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             <h3 className="text-xl font-bold mb-4">Edit Task (ID: {id})</h3>
 
             {/* Title */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title
+            </label>
             <input
               className="w-full p-2 border border-gray-300 rounded mb-4"
               value={editTitle}
@@ -139,7 +136,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             />
 
             {/* Description */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
             <textarea
               className="w-full p-2 border border-gray-300 rounded mb-4"
               value={editDescription}
@@ -147,7 +146,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             />
 
             {/* DATE FIELD */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Date</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Scheduled Date
+            </label>
             <input
               type="date"
               className="w-full p-2 border border-gray-300 rounded mb-4"
@@ -156,11 +157,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
             />
 
             {/* Priority */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Priority
+            </label>
             <select
               className="w-full p-2 border border-gray-300 rounded mb-6"
               value={editPriority}
-              onChange={(e) => setEditPriority(e.target.value as "High" | "Medium" | "Low")}
+              onChange={(e) =>
+                setEditPriority(e.target.value as "High" | "Medium" | "Low")
+              }
             >
               <option value="High">High</option>
               <option value="Medium">Medium</option>
@@ -169,10 +174,16 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
 
             {/* ACTIONS */}
             <div className="flex justify-end gap-2">
-              <button className="px-4 py-2 bg-gray-200 rounded" onClick={closeEdit}>
+              <button
+                className="px-4 py-2 bg-gray-200 rounded"
+                onClick={closeEdit}
+              >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-green-500 text-white rounded" onClick={handleSave}>
+              <button
+                className="px-4 py-2 bg-green-500 text-white rounded"
+                onClick={handleSave}
+              >
                 Save Changes
               </button>
             </div>
@@ -183,35 +194,4 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
   );
 };
 
-/** DUMMY TASKS */
-const DUMMY_TASKS: Task[] = [
-  { id: 1, title: "Go Shopping", description: "Shop at Clean Shelf.", date: "2025-11-20", priority: "High" },
-  { id: 2, title: "Make a Study Timetable", description: "", date: "2025-11-22", priority: "Medium" },
-  { id: 3, title: "Read New Blog Post", description: "React state management article.", date: "2025-11-23", priority: "Low" },
-];
-
-const TaskListContainer: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(DUMMY_TASKS);
-
-  const updateTask = (id: number, updated: Partial<Task>) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...updated } : t)));
-  };
-
-  const deleteTask = (id: number) => {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  return (
-    <div className="p-4 space-y-4">
-      {tasks.length === 0 ? (
-        <p>No active tasks 🎉</p>
-      ) : (
-        tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} />
-        ))
-      )}
-    </div>
-  );
-};
-
-export default TaskListContainer;
+export default TaskCard;
