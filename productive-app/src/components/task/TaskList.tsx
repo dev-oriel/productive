@@ -1,75 +1,76 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import React from "react";
 import NewTaskButton from "../ui/AddTaskButton";
 import TaskCard from "./TaskCard";
+import TaskLander from "./TaskLander";
 
-<<<<<<< Updated upstream
-const TaskList = () => {
-=======
 /** DUMMY TASKS */
 const DUMMY_TASKS: Task[] = [
-  {
-    id: 1,
-    title: "Go Shopping",
-    description: "Shop at Clean Shelf.",
-    date: "2025-11-20",
-    priority: "High",
-  },
-  {
-    id: 2,
-    title: "Make a Study Timetable",
-    description: "",
-    date: "2025-11-22",
-    priority: "Medium",
-  },
-  {
-    id: 3,
-    title: "Read New Blog Post",
-    description: "React state management article.",
-    date: "2025-11-23",
-    priority: "Low",
-  },
-  {
-    id: 4,
-    title: "Go Shopping",
-    description: "Shop at Clean Shelf.",
-    date: "2025-11-20",
-    priority: "High",
-  },
-  {
-    id: 5,
-    title: "Make a Study Timetable",
-    description: "",
-    date: "2025-11-22",
-    priority: "Medium",
-  },
-  {
-    id: 6,
-    title: "Read New Blog Post",
-    description: "React state management article.",
-    date: "2025-11-23",
-    priority: "Low",
-  },
-  {
-    id: 7,
-    title: "Go Shopping",
-    description: "Shop at Clean Shelf.",
-    date: "2025-11-20",
-    priority: "High",
-  },
-  {
-    id: 8,
-    title: "Make a Study Timetable",
-    description: "",
-    date: "2025-11-22",
-    priority: "Medium",
-  },
-  {
-    id: 9,
-    title: "Read New Blog Post",
-    description: "React state management article.",
-    date: "2025-11-23",
-    priority: "Low",
-  },
+  // {
+  //   id: 1,
+  //   title: "Go Shopping",
+  //   description: "Shop at Clean Shelf.",
+  //   date: "2025-11-20",
+  //   priority: "High",
+  // },
+  // {
+  //   id: 2,
+  //   title: "Make a Study Timetable",
+  //   description: "",
+  //   date: "2025-11-22",
+  //   priority: "Medium",
+  // },
+  // {
+  //   id: 3,
+  //   title: "Read New Blog Post",
+  //   description: "React state management article.",
+  //   date: "2025-11-23",
+  //   priority: "Low",
+  // },
+  // {
+  //   id: 4,
+  //   title: "Go Shopping",
+  //   description: "Shop at Clean Shelf.",
+  //   date: "2025-11-20",
+  //   priority: "High",
+  // },
+  // {
+  //   id: 5,
+  //   title: "Make a Study Timetable",
+  //   description: "",
+  //   date: "2025-11-22",
+  //   priority: "Medium",
+  // },
+  // {
+  //   id: 6,
+  //   title: "Read New Blog Post",
+  //   description: "React state management article.",
+  //   date: "2025-11-23",
+  //   priority: "Low",
+  // },
+  // {
+  //   id: 7,
+  //   title: "Go Shopping",
+  //   description: "Shop at Clean Shelf.",
+  //   date: "2025-11-20",
+  //   priority: "High",
+  // },
+  // {
+  //   id: 8,
+  //   title: "Make a Study Timetable",
+  //   description: "",
+  //   date: "2025-11-22",
+  //   priority: "Medium",
+  // },
+  // {
+  //   id: 9,
+  //   title: "Read New Blog Post",
+  //   description: "React state management article.",
+  //   date: "2025-11-23",
+  //   priority: "Low",
+  // },
 ];
 
 const STAGGER_MS = 80; // delay between items in ms
@@ -111,7 +112,6 @@ const TaskList: React.FC = () => {
   };
 
   /**TEMPLATE */
->>>>>>> Stashed changes
   return (
     <div>
       <div className="shadow-md rounded-lg p-4 md:p-5 mx-auto mt-5 mb-5 max-w-[800px] bg-white">
@@ -136,10 +136,6 @@ const TaskList: React.FC = () => {
           </div>
         </div>
       </div>
-<<<<<<< Updated upstream
-      {/* TASK CARD HERE */}
-      <TaskCard />
-=======
 
       {/* CONDITIONAL RENDERING BLOCK */}
       <div className="p-4 space-y-4 max-w-[800px] mx-auto">
@@ -169,7 +165,6 @@ const TaskList: React.FC = () => {
           ))
         )}
       </div>
->>>>>>> Stashed changes
     </div>
   );
 };
