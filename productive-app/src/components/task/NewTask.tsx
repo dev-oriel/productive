@@ -17,15 +17,15 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
   /**VARIABLES */
   if (!open) return null; // Don't render if modal is closed
 
-  /**gfgfgf */
+  /** VALIDATION SCHEMA */
   const TaskValidationSchema = Yup.object().shape({
     title: Yup.string().required("Task title is required"),
     description: Yup.string().required("Task description is required"),
     date: Yup.date().required("Task date is required"),
-    priority: Yup.string().required(),
+    priority: Yup.string().required("Priority is required"),
   });
 
-  /**gfgfgfgf */
+  /** INITIAL VALUES */
   const initialValues: NewTaskInt = {
     title: "",
     description: "",
@@ -34,7 +34,6 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
   };
 
   /**FUNCTIONS */
-  /**ffhfhfhf */
   const createTask = (values: NewTaskInt) => {
     console.log("Task Created:", values);
 
@@ -60,7 +59,6 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
             /**Sign in with api */
             const data = await createTask(values);
             setSubmitting(false);
-
             /**Reset form after submit */
             if (data) {
               resetForm();
@@ -68,7 +66,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
             }
           }}
         >
-          {({ handleReset }) => (
+          {({ handleReset, isValid, isSubmitting, errors, touched }) => (
             <Form className="space-y-6">
               {/* Task Title */}
               <div>
@@ -79,7 +77,12 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                   name="title"
                   type="text"
                   placeholder="e.g., Finish project report"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none
+                ${
+                  touched.title && errors.title
+                    ? "border-red-500 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-2 focus:ring-green-500"
+                }`}
                 />
                 <ErrorMessage
                   name="title"
@@ -91,13 +94,18 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Description
+                  Description *
                 </label>
                 <Field
                   as="textarea"
                   name="description"
                   placeholder="Add any additional details..."
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none
+               ${
+                 touched.description && errors.description
+                   ? "border-red-500 focus:ring-2 focus:ring-red-500"
+                   : "border-gray-300 focus:ring-2 focus:ring-green-500"
+               }`}
                 />
                 <ErrorMessage
                   name="description"
@@ -109,12 +117,17 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
               {/* Due Date */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Due Date
+                  Due Date *
                 </label>
                 <Field
                   type="date"
                   name="date"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className={`w-full border rounded-lg px-3 py-2 focus:outline-none
+                ${
+                  touched.date && errors.date
+                    ? "border-red-500 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-2 focus:ring-green-500"
+                }`}
                 />
                 <ErrorMessage
                   name="date"
@@ -122,7 +135,6 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                   className="text-red-500 text-sm mt-1"
                 />
               </div>
-
               {/* Priority */}
               <div>
                 <label className="block text-sm font-medium mb-2">
@@ -153,6 +165,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
 
               {/* Buttons */}
               <div className="flex justify-end gap-4 pt-4">
+                {/* Cancel */}
                 <button
                   type="button"
                   onClick={() => {
@@ -164,11 +177,13 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                   Cancel
                 </button>
 
+                {/* Create Task */}
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
+                  disabled={!isValid}
+                  className="px-5 py-2 rounded-lg bg-green-500 text-white hover:bg-green-700"
                 >
-                  Create Task
+                  {isSubmitting ? "Submitting..." : "Create Task"}
                 </button>
               </div>
             </Form>
