@@ -187,6 +187,16 @@ const LogInForm: React.FC = () => {
                     Login
                   </button>
                 </div>
+                <p className="mt-6 text-center text-sm text-gray-600">
+                  Don't have an account?{" "}
+                  <Link
+                    href="/signup"
+                    className="font-medium text-green-500 hover:text-green-600 transition duration-150"
+                  >
+                    {" "}
+                    Sign up
+                  </Link>{" "}
+                </p>
               </form>
             )}
           </Formik>
