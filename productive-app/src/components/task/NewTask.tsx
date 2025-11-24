@@ -47,7 +47,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
 
   /**TEMPLATE */
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center p-4 z-50">
       <div className="w-full max-w-xl rounded-xl shadow-lg p-6 bg-white relative">
         {/* Modal Header */}
         <h2 className="text-xl font-semibold mb-4">Create New Task</h2>
