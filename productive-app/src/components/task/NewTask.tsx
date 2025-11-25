@@ -20,8 +20,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
   /** VALIDATION SCHEMA */
   const TaskValidationSchema = Yup.object().shape({
     title: Yup.string().required("Task title is required"),
-    description: Yup.string().required("Task description is required")
-    .max(200,),
+    description: Yup.string().required("Task description is required").max(200),
     date: Yup.date().required("Task date is required"),
     priority: Yup.string().required("Priority is required"),
   });
@@ -30,7 +29,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
   const initialValues: NewTaskInt = {
     title: "",
     description: "",
-    date: "",
+    scheduledAt: "",
     priority: "Medium",
   };
 
@@ -125,7 +124,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                   name="date"
                   className={`w-full border rounded-lg px-3 py-2 focus:outline-none
                 ${
-                  touched.date && errors.date
+                  touched.scheduledAt && errors.scheduledAt
                     ? "border-red-500 focus:ring-0 focus:ring-red-500"
                     : "border-gray-300 focus:ring-0 focus:ring-green-500"
                 }`}
