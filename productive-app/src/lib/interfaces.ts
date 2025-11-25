@@ -6,10 +6,16 @@ export interface Task {
   priority: "High" | "Medium" | "Low";
 }
 
+export interface SignUpInt {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
 export interface NewTaskInt {  
   title: string;
   description: string;
-  date: string;
+  scheduledAt: string;
   priority: "High" | "Medium" | "Low";
 }
 
