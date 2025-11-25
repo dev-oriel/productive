@@ -5,6 +5,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "sonner";
 import { NewTaskInt } from "@/lib/interfaces";
+import { taskApi } from "@/lib/services/api";
+import axios from "axios";
 
 /**INTERFACES & TYPES */
 interface NewTaskProps {
@@ -21,7 +23,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
   const TaskValidationSchema = Yup.object().shape({
     title: Yup.string().required("Task title is required"),
     description: Yup.string().required("Task description is required").max(200),
-    date: Yup.date().required("Task date is required"),
+    scheduledAt: Yup.date().required("Task date is required"),
     priority: Yup.string().required("Priority is required"),
   });
 
@@ -30,18 +32,85 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
     title: "",
     description: "",
     scheduledAt: "",
-    priority: "Medium",
+    priority: "medium",
   };
 
   /**FUNCTIONS */
-  const createTask = (values: NewTaskInt) => {
-    console.log("Task Created:", values);
+  /**Function to create new task */
+  const createTask = async (values: NewTaskInt) => {
+    // try {
+    //   const response = await fetch("/api/tasks", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(values),
+    //   });
 
-    toast("Task created successfully!", {
-      className: "bg-sky-300 text-white rounded-xl shadow-md px-4 py-2",
-    });
+    //   const data = await response.json();
 
-    return "submitted";
+    //   if (!response.ok) {
+    //     toast.error(data.error || "Failed to create task");
+    //     return null;
+    //   }
+
+    //   toast("Task created successfully!", {
+    //     className: "bg-sky-300 text-white rounded-xl shadow-md px-4 py-2",
+    //   });
+
+    //   return data;
+    // } catch (error) {
+    //   toast.error("Something went wrong");
+    //   console.error(error);
+    //   return null;
+    // }
+
+    try {
+      /**Post user to API */
+      const response = await taskApi.post("/tasks", {
+        userId: "dfdfdfdfdfdfd",
+        title: values.title,
+        description: values.description,
+        scheduledAt: values.scheduledAt,
+        priority: values.priority,
+      });
+      console.log(response);
+
+      /**Alert user on success */
+      if (response.data) {
+        console.log(response.data);
+        /**Alert success */
+        toast(response.data.message, {
+          className: "bg-sky-300 text-white rounded-xl shadow-md px-4 py-2",
+        });
+        return response.data;
+      }
+    } catch (error) {
+      let errorMessage = "An unexpected error occurred";
+
+      /**Check if it is an Axios Error */
+      if (axios.isAxiosError(error)) {
+        /**check if the response exists (server responded with 4xx or 5xx) */
+        if (error.response && error.response.data) {
+          /**Capture specific 'error' field or 'message' field from backend */
+          errorMessage =
+            error.response.data.error ||
+            error.response.data.message ||
+            error.message;
+
+          /** Log the specific backend data for debugging */
+          // console.log("Backend Error Data:", error.response.data);
+        } else {
+          /**No response received (e.g., Network Error, server down) */
+          errorMessage = error.message;
+        }
+      } else if (error instanceof Error) {
+        /**Standard JS Error */
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
+      console.error(error);
+    }
   };
 
   /**TEMPLATE */
@@ -121,7 +190,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                 </label>
                 <Field
                   type="date"
-                  name="date"
+                  name="scheduledAt"
                   className={`w-full border rounded-lg px-3 py-2 focus:outline-none
                 ${
                   touched.scheduledAt && errors.scheduledAt
@@ -130,7 +199,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                 }`}
                 />
                 <ErrorMessage
-                  name="date"
+                  name="scheduledAt"
                   component="p"
                   className="text-red-500 text-sm mt-1"
                 />
@@ -147,7 +216,7 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <Field type="radio" name="priority" value="Medium" />
+                    <Field type="radio" name="priority" value="medium" />
                     <span>Medium</span>
                   </label>
 
