@@ -26,11 +26,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const { _id, title, description, scheduledAt, priority } = task;
 
   const priorityColorClass =
-    priority === "High"
-      ? "bg-orange-500 text-orange-600"
-      : priority === "Medium"
-      ? "bg-green-500 text-green-600"
-      : "bg-[#64748B] text-[#64748B]";
+    priority === "high"
+      ? "bg-orange-500"
+      : priority === "medium"
+      ? "bg-green-500 "
+      : "bg-gray-700";
 
   /** STATE */
   const [isEditing, setIsEditing] = useState(false);
@@ -145,7 +145,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
                 <span
                   onClick={onEdit}
-                  className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
+                  className={`flex items-center gap-1 cursor-pointer transition`}
                 >
                   <div
                     className={`w-3 h-3 rounded-full ${priorityColorClass}`}
@@ -253,7 +253,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   className="w-full p-2 border border-gray-300 rounded mb-6"
                   value={editPriority}
                   onChange={(e) =>
-                    setEditPriority(e.target.value as "High" | "Medium" | "Low")
+                    setEditPriority(e.target.value as "high" | "medium" | "low")
                   }
                 >
                   <option value="High">High</option>
