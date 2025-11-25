@@ -50,9 +50,10 @@ const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
       <div className="w-full max-w-xl rounded-xl shadow-lg p-6 bg-white relative">
         {/* Modal Header */}
         <h2 className="text-xl font-semibold mb-4">
- <span className="text-black">Create </span>
- <span className="text-green-500">New </span>
- <span className="text-black">Task </span></h2>
+          <span className="text-black">Create </span>
+          <span className="text-green-500">New </span>
+          <span className="text-black">Task </span>
+        </h2>
         <Formik
           initialValues={initialValues}
           validationSchema={TaskValidationSchema}
