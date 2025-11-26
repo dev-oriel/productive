@@ -136,7 +136,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 {/*UPDATED: Mark as Done Button */}
                 <button 
                   onClick={handleMarkDone}
-                  className="absolute top-6 right-6 flex items-center gap-1 bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-md shadow-sm hover:bg-[#26A671] transition-all"
+                  className="absolute top-6 right-6 flex items-center gap-1 bg-[#2DC887] text-white text-sm font-semibold px-3 py-1 rounded-md shadow-sm hover:bg-[#26A671] transition-all"
                   aria-label="Mark task as done"
                 >
                   Mark Done 
@@ -160,7 +160,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 className="text-gray-500 hover:text-[#2DC887] transition"
                 aria-label="Edit task"
               >
-                <Pencil className="w-5 h-5" />
+                <Pencil className="w-5 h-5 text-[#2DC887] hover:text-[#26A671] transition cursor-pointer" />
               </button>
             </div>
 
@@ -240,9 +240,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
                     Cancel
                   </button>
                   <button
-                    className="bg-green-500 text-white font-bold text-sm px-4 py-2 rounded-md
+                    className="bg-[#2DC887] text-white font-bold text-sm px-4 py-2 rounded-md
                           shadow-md 
-                          hover:bg-green-700 hover:shadow-lg 
+                          hover:bg-[#26A671] hover:shadow-lg 
                           transition-all duration-300
                           cursor-pointer"
                     onClick={handleSave}
