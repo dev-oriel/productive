@@ -42,7 +42,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       aria-modal="true"
     >
       <div
-        className="bg-white rounded-lg border-green-500 shadow-xl w-[800px] h-[600px] flex flex-col justify-between"
+        className="bg-white rounded-lg border-green-500 shadow-xl w-[800px] h-[400px] flex flex-col justify-between"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -56,11 +56,11 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
             </button>
           </div>
 
-          <p className="mt-3 text-lg text-gray-600 whitespace-pre-line">
+          <p className="mt-3 max-h-50 overflow-y-auto text-gray-600">
             {task.description || "No description provided."}
           </p>
 
-          <div className="mt-6 space-y-3 text-md">
+          <div className="bg-green-50 mt-6 space-y-3 text-md">
             <div className="flex items-center gap-2">
               <span className="text-gray-500">Scheduled:</span>
               <span className="font-medium">{formatDate(task.scheduledAt)}</span>
