@@ -26,11 +26,11 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const { _id, title, description, scheduledAt, priority } = task;
 
   const priorityColorClass =
-    priority === "High"
-      ? "bg-orange-500 text-orange-600"
-      : priority === "Medium"
-      ? "bg-green-500 text-green-600"
-      : "bg-[#64748B] text-[#64748B]";
+    priority === "high"
+      ? "bg-orange-500"
+      : priority === "medium"
+      ? "bg-green-500 "
+      : "bg-gray-700";
 
   /** STATE */
   const [isEditing, setIsEditing] = useState(false);
@@ -130,9 +130,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 id={`task-${_id}-title`}
                 className="text-lg font-semibold text-gray-900"
               >
-                {title}
+                {title?.trim().split(/\s+/).slice(0, 5).join(" ") +
+                  (title?.trim().split(/\s+/).length > 5 ? "..." : "")}
               </h3>
-              <p className="text-gray-500 mt-1">{description}</p>
+              <p className="text-gray-500 mt-1">
+                {description?.trim().split(/\s+/).slice(0, 5).join(" ") +
+                  (description?.trim().split(/\s+/).length > 5 ? "..." : "")}
+              </p>
 
               <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
                 <span
@@ -140,12 +144,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
                 >
                   <Calendar className="w-4 h-4 text-gray-400" />
-                  {scheduledAt}
+                  { new Date(scheduledAt).toLocaleDateString()}
                 </span>
 
                 <span
                   onClick={onEdit}
-                  className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
+                  className={`flex items-center gap-1 cursor-pointer transition`}
                 >
                   <div
                     className={`w-3 h-3 rounded-full ${priorityColorClass}`}
@@ -204,18 +208,17 @@ const TaskCard: React.FC<TaskCardProps> = ({
       {/* EDIT MODAL */}
       {isEditing && portalTarget
         ? ReactDOM.createPortal(
-            <div
-              className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-4"
+            <div className="fixed inset-0 bg-black/40 flex justify-center items-center p-4 z-50"
               role="dialog"
               aria-modal="true"
               onClick={closeEdit}
             >
-              <div
-                className="bg-white p-6 rounded-lg w-full max-w-md shadow-2xl"
+              <div className="w-full max-w-xl rounded-xl shadow-lg p-6 bg-white relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="text-xl font-bold mb-4">
-                  Edit Task (ID: {_id})
+                  <span className="text-black">Edit </span>
+                  <span className="text-green-500">Task </span>
                 </h3>
 
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -231,7 +234,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   Description
                 </label>
                 <textarea
-                  className="w-full p-2 border border-gray-300 rounded mb-4"
+                  className="w-full p-2 border border-gray-300 rounded mb-4 resize-none"
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
                 />
@@ -239,12 +242,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 <label className="block text-sm font-bold text-gray-700 mb-1">
                   Scheduled Date
                 </label>
-                <input
-                  type="date"
-                  className="w-full p-2 border border-gray-300 rounded mb-4"
-                  value={editDate}
-                  onChange={(e) => setEditDate(e.target.value)}
-                />
+           <input
+            type="date"
+            className="w-full p-2 border border-gray-300 rounded mb-4"
+            value={editDate}
+            min={new Date().toISOString().split('T')[0]}
+            onChange={(e) => setEditDate(e.target.value)}
+          />
 
                 <label className="block text-sm font-bold text-gray-700 mb-1">
                   Priority
@@ -253,7 +257,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   className="w-full p-2 border border-gray-300 rounded mb-6"
                   value={editPriority}
                   onChange={(e) =>
-                    setEditPriority(e.target.value as "High" | "Medium" | "Low")
+                    setEditPriority(e.target.value as "high" | "medium" | "low")
                   }
                 >
                   <option value="High">High</option>
