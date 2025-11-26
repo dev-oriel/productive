@@ -17,7 +17,7 @@ const Header = () => {
         >
           <button
             type="submit"
-            className="py-2 px-4 border border-transparent rounded-full shadow-md text-sm font-medium text-white bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150"
+            className="py-2 px-4 border border-transparent rounded-full shadow-md text-sm font-medium text-white bg-[#2DC887] hover:bg-[#2AB77C] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150"
           >
             Login
           </button>
@@ -28,7 +28,7 @@ const Header = () => {
         >
           <button
             type="submit"
-            className="py-2 px-4 border border-transparent rounded-full shadow-md text-sm font-medium text-white bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150"
+            className="py-2 px-4 border border-transparent rounded-full shadow-md text-sm font-medium text-white bg-[#2DC887] hover:bg-[#2AB77C] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150"
           >
             Signup
           </button>
