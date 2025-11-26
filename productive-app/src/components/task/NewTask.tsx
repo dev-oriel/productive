@@ -12,10 +12,11 @@ import axios from "axios";
 interface NewTaskProps {
   open: boolean;
   setOpen: (value: boolean) => void;
+  onTaskCreated: () => void;
 }
 
 /** COMPONENT */
-const NewTask: React.FC<NewTaskProps> = ({ open, setOpen }) => {
+const NewTask: React.FC<NewTaskProps> = ({ open, setOpen,onTaskCreated }) => {
   /**VARIABLES */
   if (!open) return null; // Don't render if modal is closed
 
@@ -119,6 +120,7 @@ const TaskValidationSchema = Yup.object().shape({
             if (data) {
               resetForm();
               setOpen(false); // Close modal after submission
+              onTaskCreated();
             }
           }}
         >
