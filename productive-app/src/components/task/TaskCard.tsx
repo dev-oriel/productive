@@ -1,66 +1,51 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Calendar, MoreVertical, Pencil } from "lucide-react";
+import { Calendar, CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { Task } from "@/lib/interfaces";
 
-/** INTERFACES & TYPES */
 interface TaskCardProps {
   task: Task;
   onUpdate: (_id: string, updatedTask: Partial<Task>) => void;
   onDelete: (_id: string) => void;
-  /** optional animation controls passed from TaskList */
+  onClick?: () => void;
   reveal?: boolean;
-  animateDelay?: number; // ms
+  animateDelay?: number;
 }
 
-/** COMPONENT */
 const TaskCard: React.FC<TaskCardProps> = ({
   task,
   onUpdate,
   onDelete,
+  onClick,
   reveal = false,
   animateDelay = 0,
 }) => {
   const { _id, title, description, scheduledAt, priority } = task;
 
   const priorityColorClass =
-    priority === "High"
-      ? "bg-orange-500 text-orange-600"
-      : priority === "Medium"
-      ? "bg-green-500 text-green-600"
-      : "bg-[#64748B] text-[#64748B]";
+    priority === "high"
+      ? "bg-orange-500"
+      : priority === "medium"
+      ? "bg-green-500"
+      : "bg-gray-700";
 
-  /** STATE */
   const [isEditing, setIsEditing] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-
   const [editTitle, setEditTitle] = useState(title);
   const [editDescription, setEditDescription] = useState(description);
   const [editPriority, setEditPriority] = useState(priority);
   const [editDate, setEditDate] = useState(scheduledAt);
 
-  /** menu portal positioning */
-  const moreBtnRef = useRef<HTMLButtonElement | null>(null);
-  const [menuCoords, setMenuCoords] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
-
-  /** HANDLERS */
   const onEdit = () => {
     setEditTitle(title);
     setEditDescription(description);
     setEditPriority(priority);
     setEditDate(scheduledAt);
     setIsEditing(true);
-    closeMenu();
   };
 
-  const onMenu = () => setShowMenu((prev) => !prev);
   const closeEdit = () => setIsEditing(false);
-  const closeMenu = () => setShowMenu(false);
 
   const handleSave = () => {
     onUpdate(_id, {
@@ -74,15 +59,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleDelete = () => {
     onDelete(_id);
-    closeMenu();
   };
 
   const handleMarkDone = () => {
     alert(`Task "${title}" marked as done! (ID: ${_id})`);
-    closeMenu();
   };
 
-  /** sync local fields if parent updates task */
   useEffect(() => {
     setEditTitle(title);
     setEditDescription(description);
@@ -90,22 +72,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
     setEditDate(scheduledAt);
   }, [title, description, priority, scheduledAt]);
 
-  /** compute menu position */
-  useEffect(() => {
-    if (showMenu && moreBtnRef.current && typeof document !== "undefined") {
-      const rect = moreBtnRef.current.getBoundingClientRect();
-      const top = rect.bottom + window.scrollY + 8;
-      const left = rect.right + window.scrollX - 160;
-      setMenuCoords({ top, left });
-    } else {
-      setMenuCoords(null);
-    }
-  }, [showMenu]);
-
-  /** portal target */
   const portalTarget = typeof document !== "undefined" ? document.body : null;
 
-  /** animation style */
   const animStyle: React.CSSProperties = {
     transitionProperty: "opacity, margin-top",
     transitionDuration: "240ms",
@@ -115,38 +83,44 @@ const TaskCard: React.FC<TaskCardProps> = ({
     marginTop: reveal ? 0 : 12,
   };
 
+  const truncate = (str: string, words = 5) =>
+    str?.trim().split(/\s+/).length > words
+      ? str.trim().split(/\s+/).slice(0, words).join(" ") + "..."
+      : str || "";
+
   return (
     <>
-      {/* MAIN CARD */}
       <div className="w-full flex justify-center my-2 relative">
         <div
           className="w-full max-w-[800px] bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex justify-between items-start hover:shadow-md transition-all min-h-0"
           aria-labelledby={`task-${_id}-title`}
         >
-          {/* LEFT */}
-          <div className="flex flex-col flex-1">
+          {/* LEFT: Title + Description (clickable for modal) */}
+          <div
+            className="flex flex-col flex-1 cursor-pointer"
+            onClick={onClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && onClick?.()}
+          >
             <div style={animStyle}>
               <h3
                 id={`task-${_id}-title`}
                 className="text-lg font-semibold text-gray-900"
               >
-                {title}
+                {truncate(title)}
               </h3>
-              <p className="text-gray-500 mt-1">{description}</p>
+              <p className="text-gray-500 mt-1">
+                {truncate(description, 8)}
+              </p>
 
               <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
-                <span
-                  onClick={onEdit}
-                  className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
-                >
+                <span className="flex items-center gap-1">
                   <Calendar className="w-4 h-4 text-gray-400" />
-                  {scheduledAt}
+                  {new Date(scheduledAt).toLocaleDateString()}
                 </span>
 
-                <span
-                  onClick={onEdit}
-                  className="flex items-center gap-1 cursor-pointer hover:text-[#2DC887] transition"
-                >
+                <span className={`flex items-center gap-1`}>
                   <div
                     className={`w-3 h-3 rounded-full ${priorityColorClass}`}
                   ></div>
@@ -156,50 +130,43 @@ const TaskCard: React.FC<TaskCardProps> = ({
             </div>
           </div>
 
-          {/* RIGHT */}
-          <div className="flex items-start gap-4 shrink-0 mt-4 md:mt-0 relative">
-            <button onClick={onEdit}>
-              <Pencil className="w-5 h-5 text-[#2DC887] hover:text-[#26A671] transition cursor-pointer" />
+          {/* Mark Done Button - Top Right */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMarkDone();
+            }}
+            className="absolute top-6 right-6 flex items-center  gap-1 bg-[#FCFCFC] text-[#2DC887] outline-none text-sm px-3 py-1 rounded-md hover:border-2 shadow-sm transition-all"
+            aria-label="Mark task as done"
+          >
+            Mark Done <CheckCircle className="w-4 h-4" />
+          </button>
+
+          {/* Edit and Delete Buttons - Bottom Right */}
+          <div className="flex items-center gap-8 mt-4 self-end md:self-auto md:absolute md:bottom-4 md:right-6">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+              className="text-gray-500 hover:text-red-600 transition"
+              aria-label="Delete task"
+            >
+              <Trash2 className="w-5 h-5" />
             </button>
-            <button ref={moreBtnRef} onClick={onMenu}>
-              <MoreVertical className="w-5 h-5 text-gray-500 hover:text-[#141204] transition cursor-pointer" />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              className="text-gray-500 hover:text-[#2DC887] transition"
+              aria-label="Edit task"
+            >
+              <Pencil className="w-5 h-5" />
             </button>
           </div>
         </div>
       </div>
-
-      {/* MENU PORTAL */}
-      {showMenu && portalTarget && menuCoords
-        ? ReactDOM.createPortal(
-            <div
-              className="absolute z-50"
-              style={{
-                position: "absolute",
-                top: menuCoords.top,
-                left: menuCoords.left,
-                width: 160,
-              }}
-              onMouseLeave={closeMenu}
-            >
-              <div className="bg-white border border-gray-200 rounded-lg shadow-xl">
-                <button
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </button>
-
-                <button
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg"
-                  onClick={handleMarkDone}
-                >
-                  Mark as Done
-                </button>
-              </div>
-            </div>,
-            portalTarget
-          )
-        : null}
 
       {/* EDIT MODAL */}
       {isEditing && portalTarget
@@ -225,9 +192,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   className="w-full p-2 border border-gray-300 rounded mb-4"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
+                  autoFocus
                 />
 
-                <label className="block text-sm font-bold text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description
                 </label>
                 <textarea
@@ -236,7 +204,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   onChange={(e) => setEditDescription(e.target.value)}
                 />
 
-                <label className="block text-sm font-bold text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Scheduled Date
                 </label>
                 <input
@@ -246,38 +214,30 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   onChange={(e) => setEditDate(e.target.value)}
                 />
 
-                <label className="block text-sm font-bold text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Priority
                 </label>
                 <select
                   className="w-full p-2 border border-gray-300 rounded mb-6"
                   value={editPriority}
                   onChange={(e) =>
-                    setEditPriority(e.target.value as "High" | "Medium" | "Low")
+                    setEditPriority(e.target.value as "high" | "medium" | "low")
                   }
                 >
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
                 </select>
 
                 <div className="flex justify-end gap-2">
                   <button
-                    className="bg-gray-400 text-white font-bold text-sm px-4 py-2 rounded-md
-                               shadow-md 
-                               hover:bg-[#64748B] hover:shadow-lg 
-                               transition-all duration-300
-                               cursor-pointer"
+                    className="bg-gray-400 text-white font-bold text-sm px-4 py-2 rounded-md shadow-md hover:bg-[#64748B] hover:shadow-lg transition-all duration-300 cursor-pointer"
                     onClick={closeEdit}
                   >
                     Cancel
                   </button>
                   <button
-                    className="bg-green-500 text-white font-bold text-sm px-4 py-2 rounded-md
-                               shadow-md 
-                               hover:bg-green-700 hover:shadow-lg 
-                               transition-all duration-300
-                               cursor-pointer"
+                    className="bg-[#2DC887] text-white font-bold text-sm px-4 py-2 rounded-md shadow-md hover:bg-[#26A671] hover:shadow-lg transition-all duration-300 cursor-pointer"
                     onClick={handleSave}
                   >
                     Save Changes
