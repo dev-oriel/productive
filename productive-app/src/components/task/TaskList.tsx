@@ -13,11 +13,14 @@ const STAGGER_MS = 50;
 
 /** TASKLIST PROPS */
 interface TaskListProps {
-  setOpen: (value: boolean) => void; // receive setOpen from parent
+  setOpen: (value: boolean) => void;
+  refreshTrigger: number;
 }
 
 /** COMPONENT */
-const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
+
+const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
+  /** VARIABLES */
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [revealed, setRevealed] = useState<boolean>(false);
@@ -34,6 +37,8 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
         }
       } catch (err) {
         console.error("Failed to fetch tasks:", err);
+
+        //**Error Message */
         setError(
           "Unable to load your tasks at the moment. Please try again later."
         );
@@ -43,7 +48,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
     };
 
     fetchTasks();
-  }, []);
+  }, [refreshTrigger]);
 
   /** UPDATE TASK */
   const handleUpdateTask = async (_id: string, updatedTask: Partial<Task>) => {
