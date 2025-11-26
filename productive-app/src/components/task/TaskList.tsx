@@ -12,19 +12,21 @@ const STAGGER_MS = 50;
 
 interface TaskListProps {
   setOpen: (value: boolean) => void;
+  refreshTrigger: number;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+/** COMPONENT */
+const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
+  /** VARIABLES */
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [revealed, setRevealed] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [revealed, setRevealed] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const openTaskDetail = (task: Task) => setSelectedTask(task);
-  const closeTaskDetail = () => setSelectedTask(null);
+  /*FUNCTIONS */
 
-  // Fetch tasks
+  /** Function to get tasks */
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -34,13 +36,21 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
           setTimeout(() => setRevealed(true), 50);
         }
       } catch (err) {
-        setError("Unable to load your tasks at the moment. Please try again later.");
+        console.error("Failed to fetch tasks:", err);
+
+        //**Error Message */
+        setError(
+          "Unable to load your tasks at the moment. Please try again later."
+        );
       } finally {
         setIsLoading(false);
       }
     };
     fetchTasks();
-  }, []);
+  }, [refreshTrigger]);
+
+  const openTaskDetail = (task: Task) => setSelectedTask(task);
+  const closeTaskDetail = () => setSelectedTask(null)
 
   // Update task
   const handleUpdateTask = async (_id: string, updatedTask: Partial<Task>) => {
@@ -61,6 +71,8 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen }) => {
       setError("Failed to delete task. Please try again.");
     }
   };
+
+  /* TEMPLATE */
 
   return (
     <div>

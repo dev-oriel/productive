@@ -92,7 +92,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
     <>
       <div className="w-full flex justify-center my-2 relative">
         <div
-          className="w-full max-w-[800px] bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex justify-between items-start hover:shadow-md transition-all min-h-[0px]"
+          className="w-full max-w-[800px] bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex justify-between items-start hover:shadow-md transition-all min-h-0"
           aria-labelledby={`task-${_id}-title`}
         >
           {/* LEFT: Title + Description (clickable for modal) */}

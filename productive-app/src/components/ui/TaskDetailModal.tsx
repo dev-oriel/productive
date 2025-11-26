@@ -36,18 +36,18 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0  bg-opacity-50 bg-black/40 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0  bg-opacity-50 flex   items-center shadow-md  bg-black/40  justify-center z-50 p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-md"
+        className="bg-white rounded-lg border-green-500 shadow-xl w-[800px] h-[600px] flex flex-col justify-between"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
           <div className="flex justify-between items-start">
-            <h2 className="text-xl font-bold text-gray-800">{task.title}</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{task.title}</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
@@ -56,11 +56,11 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
             </button>
           </div>
 
-          <p className="mt-3 text-gray-600 whitespace-pre-line">
+          <p className="mt-3 text-lg text-gray-600 whitespace-pre-line">
             {task.description || "No description provided."}
           </p>
 
-          <div className="mt-6 space-y-3 text-sm">
+          <div className="mt-6 space-y-3 text-md">
             <div className="flex items-center gap-2">
               <span className="text-gray-500">Scheduled:</span>
               <span className="font-medium">{formatDate(task.scheduledAt)}</span>
