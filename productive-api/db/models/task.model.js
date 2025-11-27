@@ -1,37 +1,50 @@
 const mongoose = require("mongoose");
 
-const TaskSchema = new mongoose.Schema({
-  userId: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+const TASKSTATUS = {
+  PENDING: "pending",
+  COMPLETE: "complete", 
+};
+
+const TASKPRIORITY = {
+  LOW: "low",
+  MEDIUM: "medium",
+  HIGH: "high",
+};
+
+const TaskSchema = new mongoose.Schema(
+  {
+    userId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    ],
+    title: {
+      type: String,
       required: true,
     },
-  ],
-  categoryId: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+    description: {
+      type: String,
       required: false,
     },
-  ],
-  title: {
-    type: String,
-    required: true,
+    status: {
+      type: String,
+      enum: Object.values(TASKSTATUS),
+      default: TASKSTATUS.PENDING,
+    },
+    scheduledAt: {
+      type: Date,
+      required: true,
+    },
+    priority: {
+      type: String,
+      enum: Object.values(TASKPRIORITY),
+      default: TASKPRIORITY.MEDIUM,
+    },
   },
-  description: {
-    type: String,
-    required: false,
-  },
-  isDone: {
-    type: Boolean,
-    default: false,
-  },
-  scheduledAt: {
-    type: Date,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 const Task = mongoose.model("Task", TaskSchema);
 

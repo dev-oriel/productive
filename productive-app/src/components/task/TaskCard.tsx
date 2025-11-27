@@ -1,217 +1,280 @@
 "use client";
 
-import React, { useState } from "react";
-import { Calendar, MoreVertical, Pencil } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { Calendar, CheckCircle, Pencil, Trash2 } from "lucide-react";
+import { Task } from "@/lib/interfaces";
 
-/** TYPES */
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  priority: "High" | "Medium" | "Low";
-}
-
+/**INTERFACES & TYPES */
 interface TaskCardProps {
   task: Task;
-  onUpdate: (id: number, updatedTask: Partial<Task>) => void;
-  onDelete: (id: number) => void;
+  onUpdate: (_id: string, updatedTask: Partial<Task>) => void;
+  onDelete: (_id: string) => void;
+  onClick?: () => void;
+  reveal?: boolean;
+  animateDelay?: number;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate, onDelete }) => {
-  const { id, title, description, date, priority } = task;
+/**COMPONENT */
+const TaskCard: React.FC<TaskCardProps> = ({
+  task,
+  onUpdate,
+  onDelete,
+  onClick,
+  reveal = false,
+  animateDelay = 0,
+}) => {
+  /** VARIABLES */
+  const { _id, title, description, scheduledAt, priority, status } = task;
 
   const priorityColorClass =
-    priority === "High"
-      ? "bg-red-500 text-red-600"
-      : priority === "Medium"
-      ? "bg-yellow-500 text-yellow-600"
-      : "bg-green-500 text-green-600";
+    priority === "high"
+      ? "bg-orange-500"
+      : priority === "medium"
+      ? "bg-green-500"
+      : "bg-gray-700";
 
-  /** STATE */
   const [isEditing, setIsEditing] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-
   const [editTitle, setEditTitle] = useState(title);
   const [editDescription, setEditDescription] = useState(description);
   const [editPriority, setEditPriority] = useState(priority);
+  const [editDate, setEditDate] = useState(scheduledAt);
+  const [isCompleted, setIsCompleted] = useState(task.status === "complete");
+  const closeEdit = () => setIsEditing(false);
+  const portalTarget = typeof document !== "undefined" ? document.body : null;
 
-  const [editDate, setEditDate] = useState(date);
+  const animStyle: React.CSSProperties = {
+    transitionProperty: "opacity, margin-top",
+    transitionDuration: "240ms",
+    transitionTimingFunction: "cubic-bezier(.2,.9,.2,1)",
+    transitionDelay: `${animateDelay}ms`,
+    opacity: reveal ? 1 : 0,
+    marginTop: reveal ? 0 : 12,
+  };
 
-  /** HANDLERS */
+  /**FUNCTIONS */
+  /**Function to edit */
   const onEdit = () => {
     setEditTitle(title);
     setEditDescription(description);
     setEditPriority(priority);
-    setEditDate(date);
+    setEditDate(scheduledAt);
     setIsEditing(true);
-    closeMenu();
   };
 
-  const onMenu = () => setShowMenu((prev) => !prev);
-  const closeEdit = () => setIsEditing(false);
-  const closeMenu = () => setShowMenu(false);
-
+  /**Function to handle update */
   const handleSave = () => {
-    onUpdate(id, {
+    onUpdate(_id, {
       title: editTitle,
       description: editDescription,
       priority: editPriority,
-      date: editDate, 
+      scheduledAt: editDate,
+      status: isCompleted ? "complete" : "pending",
     });
     closeEdit();
   };
 
+  /**Function to handle delete */
   const handleDelete = () => {
-    onDelete(id);
-    closeMenu();
+    onDelete(_id);
   };
 
-  const handleMarkDone = () => {
-    alert(`Task "${title}" marked as done! (ID: ${id})`);
-    closeMenu();
+  /**Function to mark task as done */
+  const toggleMarkDone = (task: Task) => {
+    if (task.status === "complete") {
+      setIsCompleted(false);
+      onUpdate(_id, { status: "pending" });
+      console.log("Marked as pending");
+      return;
+    }
+    setIsCompleted(true);
+    onUpdate(_id, { status: "complete" });
+    console.log("Marked as done");
   };
 
+  useEffect(() => {
+    setEditTitle(title);
+    setEditDescription(description);
+    setEditPriority(priority);
+    setEditDate(scheduledAt);
+    setIsCompleted(task.status === "complete");
+  }, [title, description, priority, scheduledAt, status]);
+
+  /**Function totruncate description & title */
+  const truncate = (str: string, words = 5) =>
+    str?.trim().split(/\s+/).length > words
+      ? str.trim().split(/\s+/).slice(0, words).join(" ") + "..."
+      : str || "";
+
+  /**TEMPLATE */
   return (
-    <div className="w-full flex justify-center my-2 relative">
-      <div className="w-full max-w-[800px] bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex justify-between items-start hover:shadow-md transition-all min-h-[0px]">
-        
-        {/* LEFT */}
-        <div className="flex flex-col flex-1">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          <p className="text-gray-500 mt-1">{description}</p>
-
-          <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
-            <span className="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition">
-              <Calendar className="w-4 h-4 text-gray-400" />
-              {date}
-            </span>
-
-            <span className="flex items-center gap-1">
-              <div className={`w-3 h-3 rounded-full ${priorityColorClass}`}></div>
-              {priority} Priority
-            </span>
-          </div>
-        </div>
-
-        {/* RIGHT */}
-        <div className="flex items-start gap-4 flex-shrink-0 mt-4 md:mt-0 relative">
-          <button onClick={onEdit}>
-            <Pencil className="w-5 h-5 text-green-500 hover:text-green-600 transition" />
-          </button>
-
-          <button onClick={onMenu}>
-            <MoreVertical className="w-5 h-5 text-gray-500 hover:text-gray-700 transition" />
-          </button>
-
-          {showMenu && (
-            <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-xl z-10">
-              <button
-                className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg"
-                onClick={handleDelete}
+    <>
+      <div className="w-full flex justify-center my-2 relative">
+        <div
+          className="w-full max-w-[800px] bg-white border border-gray-200 shadow-sm rounded-2xl p-6 flex justify-between items-start hover:shadow-md transition-all min-h-0"
+          aria-labelledby={`task-${_id}-title`}
+        >
+          {/* LEFT: Title + Description (clickable for modal) */}
+          <div
+            className="flex flex-col flex-1 cursor-pointer"
+            onClick={onClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && onClick?.()}
+          >
+            <div style={animStyle}>
+              <h3
+                id={`task-${_id}-title`}
+                className="text-lg font-semibold text-gray-900"
               >
-                Delete
-              </button>
+                {truncate(title)}
+              </h3>
+              <p className="text-gray-500 mt-1">{truncate(description, 8)}</p>
 
-              <button
-                className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-lg"
-                onClick={handleMarkDone}
-              >
-                Mark as Done
-              </button>
+              <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4 text-gray-400" />
+                  {new Date(scheduledAt).toLocaleDateString()}
+                </span>
+
+                <span className={`flex items-center gap-1`}>
+                  <div
+                    className={`w-3 h-3 rounded-full ${priorityColorClass}`}
+                  ></div>
+                  {priority} Priority
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Mark Done Button - Top Right */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleMarkDone(task);
+            }}
+            className="absolute top-6 right-6 flex items-center  gap-1 bg-[#FCFCFC] text-[#2DC887] outline-none text-sm px-3 py-1 rounded-md hover:border-2 shadow-sm transition-all"
+            aria-label="Mark task as done"
+          >
+            {task.status === "complete" ? <p>Done</p> : <p>Mark Done</p>}{" "}
+            <CheckCircle className="w-4 h-4" />
+          </button>
+
+          {/* STYLING FOR COMPLETED TASK */}
+          {isCompleted && (
+            <div className="absolute inset-0 bg-gray-100/50  rounded-2xl z-20 pointer-events-none"></div>
           )}
+
+          {/* Edit and Delete Buttons - Bottom Right */}
+          <div className="flex items-center gap-8 mt-4 self-end md:self-auto md:absolute md:bottom-4 md:right-6">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+              className="text-gray-500 hover:text-red-600 transition"
+              aria-label="Delete task"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              className="text-gray-500 hover:text-[#2DC887] transition"
+              aria-label="Edit task"
+            >
+              <Pencil className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* EDIT MODAL */}
-      {isEditing && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-4">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-2xl">
-            <h3 className="text-xl font-bold mb-4">Edit Task (ID: {id})</h3>
-
-            {/* Title */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-            <input
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-            />
-
-            {/* Description */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-            />
-
-            {/* DATE FIELD */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Date</label>
-            <input
-              type="date"
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-              value={editDate}
-              onChange={(e) => setEditDate(e.target.value)}
-            />
-
-            {/* Priority */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-            <select
-              className="w-full p-2 border border-gray-300 rounded mb-6"
-              value={editPriority}
-              onChange={(e) => setEditPriority(e.target.value as "High" | "Medium" | "Low")}
+      {isEditing && portalTarget
+        ? ReactDOM.createPortal(
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center p-4 z-50"
+              role="dialog"
+              aria-modal="true"
+              onClick={closeEdit}
             >
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
+              <div
+                className="w-full max-w-xl rounded-xl shadow-lg p-6 bg-white relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-xl font-bold mb-4">
+                  <span className="text-black">Edit </span>
+                  <span className="text-green-500">Task </span>
+                </h3>
 
-            {/* ACTIONS */}
-            <div className="flex justify-end gap-2">
-              <button className="px-4 py-2 bg-gray-200 rounded" onClick={closeEdit}>
-                Cancel
-              </button>
-              <button className="px-4 py-2 bg-green-500 text-white rounded" onClick={handleSave}>
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title
+                </label>
+                <input
+                  className="w-full p-2 border border-gray-300 rounded mb-4"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  autoFocus
+                />
+
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded mb-4 resize-none"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
+
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Scheduled Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded mb-4"
+                  value={editDate}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setEditDate(e.target.value)}
+                />
+
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Priority
+                </label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded mb-6"
+                  value={editPriority}
+                  onChange={(e) =>
+                    setEditPriority(e.target.value as "high" | "medium" | "low")
+                  }
+                >
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    className="bg-gray-400 text-white font-bold text-sm px-4 py-2 rounded-md shadow-md hover:bg-[#64748B] hover:shadow-lg transition-all duration-300 cursor-pointer"
+                    onClick={closeEdit}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="bg-[#2DC887] text-white font-bold text-sm px-4 py-2 rounded-md shadow-md hover:bg-[#26A671] hover:shadow-lg transition-all duration-300 cursor-pointer"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>,
+            portalTarget
+          )
+        : null}
+    </>
   );
 };
 
-/** DUMMY TASKS */
-const DUMMY_TASKS: Task[] = [
-  { id: 1, title: "Go Shopping", description: "Shop at Clean Shelf.", date: "2025-11-20", priority: "High" },
-  { id: 2, title: "Make a Study Timetable", description: "", date: "2025-11-22", priority: "Medium" },
-  { id: 3, title: "Read New Blog Post", description: "React state management article.", date: "2025-11-23", priority: "Low" },
-];
-
-const TaskListContainer: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(DUMMY_TASKS);
-
-  const updateTask = (id: number, updated: Partial<Task>) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...updated } : t)));
-  };
-
-  const deleteTask = (id: number) => {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  return (
-    <div className="p-4 space-y-4">
-      {tasks.length === 0 ? (
-        <p>No active tasks 🎉</p>
-      ) : (
-        tasks.map((task) => (
-          <TaskCard key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} />
-        ))
-      )}
-    </div>
-  );
-};
-
-export default TaskListContainer;
+export default TaskCard;

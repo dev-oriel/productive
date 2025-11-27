@@ -3,6 +3,7 @@ const app = express();
 const { mongoose } = require("./db/mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const requireAuth = require("./middleware/auth");
 
 /** Load the express middleware */
 app.use(bodyParser.json());
@@ -23,15 +24,19 @@ app.use(cors(corsOptions));
 //   next();
 // });
 
-
 /**EVERYTHING IS HERE */
 app.get("/", (req, res) => {
   res.send("Your server is running");
 });
 
+/*AUTH ROUTES */
+app.use("/auth", require("./routes/auth.routes"));
+
+/**ADD AUTH MIDDLEWARE */
+app.use(requireAuth);
+
 /*TASKS ROUTES */
 app.use("/tasks", require("./routes/tasks.routes"));
-
 
 const PORT = 4000;
 app.listen(PORT, () => {

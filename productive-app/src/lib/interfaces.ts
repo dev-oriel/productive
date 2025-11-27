@@ -1,0 +1,37 @@
+export interface Task {
+  _id: string;
+  userId?: any;
+  title: string;
+  description: string;
+  scheduledAt: string;
+  priority: "high" | "medium" | "low";
+  status: "pending" | "complete";
+}
+
+export interface SignUpInt {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+export interface NewTaskInt {  
+  title: string;
+  description: string;
+  scheduledAt: string;
+  priority: "high" | "medium" | "low";
+}
+
+export type Nothing = {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  priority: "high" | "medium" | "low";
+}
+
+export interface EditTask {  
+  title: string;
+  description: string;
+  date: string;
+  priority: "high" | "medium" | "low";
+};
