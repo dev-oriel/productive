@@ -5,6 +5,7 @@ export interface Task {
   description: string;
   scheduledAt: string;
   priority: "high" | "medium" | "low";
+  status: "pending" | "complete";
 }
 
 export interface SignUpInt {
