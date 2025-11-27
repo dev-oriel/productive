@@ -62,11 +62,21 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
     }
   };
 
-  /**Function to  Delete task */
+  /**Function to  Delete task */
   const handleDeleteTask = async (_id: string) => {
+    //CONFIRMATION POPUP
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this task? This action cannot be undone."
+    );
+
+    if (!isConfirmed) {
+      return; // Stop execution if the user cancels
+    }
+
     try {
       await taskApi.delete(`/tasks/${_id}`);
       setTasks((prev) => prev.filter((t) => t._id !== _id));
+      setSelectedTask(null); 
     } catch (err) {
       setError("Failed to delete task. Please try again.");
     }
@@ -114,7 +124,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
               key={task._id}
               task={task}
               onUpdate={handleUpdateTask}
-              onDelete={handleDeleteTask}
+              onDelete={() => handleDeleteTask(task._id)} 
               onClick={() => openTaskDetail(task)}
               reveal={revealed}
               animateDelay={Math.min(index, 8) * STAGGER_MS}
