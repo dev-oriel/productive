@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { Calendar, CheckCircle, Pencil, Trash2 } from "lucide-react";
 import { Task } from "@/lib/interfaces";
 
+/**INTERFACES & TYPES */
 interface TaskCardProps {
   task: Task;
   onUpdate: (_id: string, updatedTask: Partial<Task>) => void;
@@ -14,6 +15,7 @@ interface TaskCardProps {
   animateDelay?: number;
 }
 
+/**COMPONENT */
 const TaskCard: React.FC<TaskCardProps> = ({
   task,
   onUpdate,
@@ -22,7 +24,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   reveal = false,
   animateDelay = 0,
 }) => {
-  const { _id, title, description, scheduledAt, priority } = task;
+  /** VARIABLES */
+  const { _id, title, description, scheduledAt, priority, status } = task;
 
   const priorityColorClass =
     priority === "high"
@@ -36,42 +39,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const [editDescription, setEditDescription] = useState(description);
   const [editPriority, setEditPriority] = useState(priority);
   const [editDate, setEditDate] = useState(scheduledAt);
-
-  const onEdit = () => {
-    setEditTitle(title);
-    setEditDescription(description);
-    setEditPriority(priority);
-    setEditDate(scheduledAt);
-    setIsEditing(true);
-  };
-
+  const [isCompleted, setIsCompleted] = useState(task.status === "complete");
   const closeEdit = () => setIsEditing(false);
-
-  const handleSave = () => {
-    onUpdate(_id, {
-      title: editTitle,
-      description: editDescription,
-      priority: editPriority,
-      scheduledAt: editDate,
-    });
-    closeEdit();
-  };
-
-  const handleDelete = () => {
-    onDelete(_id);
-  };
-
-  const handleMarkDone = () => {
-    alert(`Task "${title}" marked as done! (ID: ${_id})`);
-  };
-
-  useEffect(() => {
-    setEditTitle(title);
-    setEditDescription(description);
-    setEditPriority(priority);
-    setEditDate(scheduledAt);
-  }, [title, description, priority, scheduledAt]);
-
   const portalTarget = typeof document !== "undefined" ? document.body : null;
 
   const animStyle: React.CSSProperties = {
@@ -83,11 +52,61 @@ const TaskCard: React.FC<TaskCardProps> = ({
     marginTop: reveal ? 0 : 12,
   };
 
+  /**FUNCTIONS */
+  /**Function to edit */
+  const onEdit = () => {
+    setEditTitle(title);
+    setEditDescription(description);
+    setEditPriority(priority);
+    setEditDate(scheduledAt);
+    setIsEditing(true);
+  };
+
+  /**Function to handle update */
+  const handleSave = () => {
+    onUpdate(_id, {
+      title: editTitle,
+      description: editDescription,
+      priority: editPriority,
+      scheduledAt: editDate,
+      status: isCompleted ? "complete" : "pending",
+    });
+    closeEdit();
+  };
+
+  /**Function to handle delete */
+  const handleDelete = () => {
+    onDelete(_id);
+  };
+
+  /**Function to mark task as done */
+  const toggleMarkDone = (task: Task) => {
+    if (task.status === "complete") {
+      setIsCompleted(false);
+      onUpdate(_id, { status: "pending" });
+      console.log("Marked as pending");
+      return;
+    }
+    setIsCompleted(true);
+    onUpdate(_id, { status: "complete" });
+    console.log("Marked as done");
+  };
+
+  useEffect(() => {
+    setEditTitle(title);
+    setEditDescription(description);
+    setEditPriority(priority);
+    setEditDate(scheduledAt);
+    setIsCompleted(task.status === "complete");
+  }, [title, description, priority, scheduledAt, status]);
+
+  /**Function totruncate description & title */
   const truncate = (str: string, words = 5) =>
     str?.trim().split(/\s+/).length > words
       ? str.trim().split(/\s+/).slice(0, words).join(" ") + "..."
       : str || "";
 
+  /**TEMPLATE */
   return (
     <>
       <div className="w-full flex justify-center my-2 relative">
@@ -110,9 +129,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               >
                 {truncate(title)}
               </h3>
-              <p className="text-gray-500 mt-1">
-                {truncate(description, 8)}
-              </p>
+              <p className="text-gray-500 mt-1">{truncate(description, 8)}</p>
 
               <div className="flex items-center gap-6 mt-4 text-sm text-gray-500 flex-wrap">
                 <span className="flex items-center gap-1">
@@ -134,13 +151,19 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleMarkDone();
+              toggleMarkDone(task);
             }}
             className="absolute top-6 right-6 flex items-center  gap-1 bg-[#FCFCFC] text-[#2DC887] outline-none text-sm px-3 py-1 rounded-md hover:border-2 shadow-sm transition-all"
             aria-label="Mark task as done"
           >
-            Mark Done <CheckCircle className="w-4 h-4" />
+            {task.status === "complete" ? <p>Done</p> : <p>Mark Done</p>}{" "}
+            <CheckCircle className="w-4 h-4" />
           </button>
+
+          {/* STYLING FOR COMPLETED TASK */}
+          {isCompleted && (
+            <div className="absolute inset-0 bg-gray-100/50  rounded-2xl z-20 pointer-events-none"></div>
+          )}
 
           {/* Edit and Delete Buttons - Bottom Right */}
           <div className="flex items-center gap-8 mt-4 self-end md:self-auto md:absolute md:bottom-4 md:right-6">
@@ -171,12 +194,14 @@ const TaskCard: React.FC<TaskCardProps> = ({
       {/* EDIT MODAL */}
       {isEditing && portalTarget
         ? ReactDOM.createPortal(
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center p-4 z-50"
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center p-4 z-50"
               role="dialog"
               aria-modal="true"
               onClick={closeEdit}
             >
-              <div className="w-full max-w-xl rounded-xl shadow-lg p-6 bg-white relative"
+              <div
+                className="w-full max-w-xl rounded-xl shadow-lg p-6 bg-white relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="text-xl font-bold mb-4">
@@ -206,13 +231,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Scheduled Date
                 </label>
-           <input
-            type="date"
-            className="w-full p-2 border border-gray-300 rounded mb-4"
-            value={editDate}
-            min={new Date().toISOString().split('T')[0]}
-            onChange={(e) => setEditDate(e.target.value)}
-          />
+                <input
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded mb-4"
+                  value={editDate}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setEditDate(e.target.value)}
+                />
 
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Priority

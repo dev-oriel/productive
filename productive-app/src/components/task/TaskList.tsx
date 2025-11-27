@@ -10,6 +10,7 @@ import TaskDetailModal from "../ui/TaskDetailModal";
 
 const STAGGER_MS = 50;
 
+/**INTERFACES & TYPES */
 interface TaskListProps {
   setOpen: (value: boolean) => void;
   refreshTrigger: number;
@@ -24,8 +25,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
   const [error, setError] = useState<string | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  /*FUNCTIONS */
-
+  /**FUNCTIONS */
   /** Function to get tasks */
   useEffect(() => {
     const fetchTasks = async () => {
@@ -38,7 +38,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
       } catch (err) {
         console.error("Failed to fetch tasks:", err);
 
-        //**Error Message */
+        /**Error Message */
         setError(
           "Unable to load your tasks at the moment. Please try again later."
         );
@@ -52,7 +52,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
   const openTaskDetail = (task: Task) => setSelectedTask(task);
   const closeTaskDetail = () => setSelectedTask(null)
 
-  // Update task
+  /**Function to Update task */
   const handleUpdateTask = async (_id: string, updatedTask: Partial<Task>) => {
     try {
       const response = await taskApi.patch(`/tasks/${_id}`, updatedTask);
@@ -62,7 +62,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
     }
   };
 
-  // Delete task
+  /**Function to  Delete task */
   const handleDeleteTask = async (_id: string) => {
     try {
       await taskApi.delete(`/tasks/${_id}`);
@@ -72,8 +72,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
     }
   };
 
-  /* TEMPLATE */
-
+  /**TEMPLATE */
   return (
     <div>
       <div className="shadow-md rounded-lg p-4 md:p-5 mx-auto mt-5 mb-5 max-w-[800px] bg-white sticky top-0 z-40">
