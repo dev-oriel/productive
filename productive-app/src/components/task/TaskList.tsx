@@ -71,7 +71,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
       setTasks((prev) => prev.filter((t) => t._id !== _id));
       setSelectedTask(null); // Close the detail modal if the selected task is deleted
       
-      // OPTIONAL: Success message using Sonner
+      //Success message using Sonner
       toast.success("Task deleted successfully!", {
         description: "Your task has been permanently removed.",
       });
@@ -109,7 +109,7 @@ const TaskList: React.FC<TaskListProps> = ({ setOpen, refreshTrigger }) => {
               deleteTaskApiCall(_id);
               toast.dismiss(t); // Dismiss the toast after confirmation
             }}
-            // Use a destructive color scheme for the delete button
+            //Color scheme for the delete button
             className="text-sm px-3 py-1.5 rounded-md text-white bg-red-600 hover:bg-red-700 transition"
           >
             Delete
